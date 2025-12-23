@@ -4,7 +4,7 @@ import { SessionData } from '@/types';
 
 // Session configuration
 export const sessionOptions: SessionOptions = {
-    password: process.env.SECRET_COOKIE_PASSWORD as string,
+    password: process.env.SECRET_COOKIE_PASSWORD as string || "RgJe!cX27kWONMDl3yAGpKb$6PuLTVv@",
     cookieName: 'adryze_os_session',
     cookieOptions: {
         secure: process.env.NODE_ENV === 'production',
@@ -19,7 +19,7 @@ export const sessionOptions: SessionOptions = {
  */
 export async function getSession(): Promise<IronSession<SessionData>> {
     const cookieStore = await cookies();
-    return getIronSession<SessionData>(cookieStore, sessionOptions);
+    return getIronSession<SessionData>(cookieStore as any, sessionOptions);
 }
 
 /**
