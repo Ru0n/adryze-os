@@ -15,7 +15,8 @@ import {
     ShieldAlert,
     Pause,
     Info,
-    ChevronLeft
+    X,
+    ExternalLink
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -60,12 +61,129 @@ const platforms = [
     },
 ];
 
+interface UserListModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    platform: string;
+}
+
+function UserListModal({ isOpen, onClose, platform }: UserListModalProps) {
+    const { data, error, isLoading } = useSWR(isOpen ? '/api/crm/leads' : null, fetcher);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    if (!isOpen) return null;
+
+    const leads = data?.leads || [];
+    const filteredLeads = leads.filter((lead: any) =>
+        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (lead.phone && lead.phone.includes(searchTerm))
+    );
+
+    const handleUserClick = (lead: any) => {
+        let url = '';
+        const name = lead.name || '';
+        const phone = lead.phone?.replace(/\D/g, '') || ''; // Remove non-digits
+
+        switch (platform) {
+            case 'whatsapp':
+                if (phone) url = `https://wa.me/${phone}`;
+                else alert('This user does not have a phone number.');
+                break;
+            case 'instagram':
+                url = `https://instagram.com/${name.replace(/\s+/g, '')}`;
+                break;
+            case 'facebook':
+                url = `https://facebook.com/search/top?q=${encodeURIComponent(name)}`;
+                break;
+            case 'tiktok':
+                url = `https://tiktok.com/@${name.replace(/\s+/g, '')}`;
+                break;
+            default:
+                break;
+        }
+
+        if (url) {
+            window.open(url, '_blank');
+            onClose();
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/50">
+                    <h3 className="font-bold text-lg">Select User for {platforms.find(p => p.id === platform)?.name}</h3>
+                    <button onClick={onClose} className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                        <input
+                            autoFocus
+                            placeholder="Search users..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                </div>
+
+                <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
+                    {isLoading ? (
+                        <div className="p-8 text-center text-zinc-500">Loading users...</div>
+                    ) : filteredLeads.length > 0 ? (
+                        filteredLeads.map((lead: any) => (
+                            <button
+                                key={lead.id}
+                                onClick={() => handleUserClick(lead)}
+                                className="w-full flex items-center gap-3 p-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg transition-colors text-left group"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                                    {lead.name[0]}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="font-semibold truncate">{lead.name}</div>
+                                    <div className="text-xs text-zinc-500 truncate">
+                                        {lead.phone || 'No phone'} • {lead.email_from || 'No email'}
+                                    </div>
+                                </div>
+                                <ExternalLink className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                        ))
+                    ) : (
+                        <div className="p-8 text-center text-zinc-500">
+                            {searchTerm ? 'No users found matching your search.' : 'No users found.'}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function ChatPage() {
     const [selectedPlatform, setSelectedPlatform] = useState('all');
     const [selectedConversation, setSelectedConversation] = useState<any>(null);
     const [messageInput, setMessageInput] = useState('');
     const [sending, setSending] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Modal State
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+    const [modalPlatform, setModalPlatform] = useState('');
+
+    const handlePlatformClick = (platformId: string) => {
+        setSelectedPlatform(platformId);
+        setSelectedConversation(null);
+    };
+
+    const handleNewChatClick = () => {
+        setModalPlatform(selectedPlatform === 'all' ? 'whatsapp' : selectedPlatform);
+        setIsUserModalOpen(true);
+    };
 
     // Fetch conversations
     const { data: conversationsData, mutate: mutateConversations } = useSWR(
@@ -163,12 +281,18 @@ export default function ChatPage() {
 
     return (
         <div className="h-full flex bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 font-sans">
+            <UserListModal
+                isOpen={isUserModalOpen}
+                onClose={() => setIsUserModalOpen(false)}
+                platform={modalPlatform}
+            />
+
             {/* 1. Platform Bar (Thin & Clean) */}
             <div className="w-16 border-r border-zinc-200 dark:border-zinc-800 flex flex-col items-center py-6 gap-6">
                 {platforms.map((p) => (
                     <button
                         key={p.id}
-                        onClick={() => setSelectedPlatform(p.id)}
+                        onClick={() => handlePlatformClick(p.id)}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedPlatform === p.id ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-black' : 'hover:bg-zinc-100 dark:hover:bg-zinc-900'
                             }`}
                         title={p.name}
@@ -176,7 +300,7 @@ export default function ChatPage() {
                         {p.logo ? (
                             <img src={p.logo} alt={p.name} className="w-6 h-6 object-contain" />
                         ) : (
-                            <p.icon className="w-6 h-6" />
+                            p.icon && <p.icon className="w-6 h-6" />
                         )}
                     </button>
                 ))}
@@ -185,7 +309,16 @@ export default function ChatPage() {
             {/* 2. Chat List */}
             <div className="w-80 border-r border-zinc-200 dark:border-zinc-800 flex flex-col">
                 <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
-                    <h1 className="text-xl font-bold mb-4">Messages</h1>
+                    <div className="flex justify-between items-center mb-4">
+                        <h1 className="text-xl font-bold">{platforms.find(p => p.id === selectedPlatform)?.name || 'Chats'}</h1>
+                        <button
+                            onClick={handleNewChatClick}
+                            className="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 p-2 rounded-lg transition-colors text-zinc-600 dark:text-zinc-400"
+                            title="New Chat"
+                        >
+                            <MessageCircle className="w-4 h-4" />
+                        </button>
+                    </div>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                         <input
@@ -249,8 +382,8 @@ export default function ChatPage() {
                             <button
                                 onClick={toggleAI}
                                 className={`text-[10px] font-bold px-3 py-1.5 rounded-full border transition-all ${selectedConversation.status === 'automated'
-                                        ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
+                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
                                     }`}
                             >
                                 {selectedConversation.status === 'automated' ? 'AI ACTIVE' : 'MANUAL MODE'}
@@ -265,8 +398,8 @@ export default function ChatPage() {
                                     <div key={msg.id || i} className={`flex ${isAgent ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[75%] ${isAgent ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                                             <div className={`px-4 py-2 rounded-2xl text-sm ${isAgent
-                                                    ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-tr-sm'
-                                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-tl-sm'
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-tr-sm'
+                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-tl-sm'
                                                 }`}>
                                                 {msg.body}
                                             </div>
