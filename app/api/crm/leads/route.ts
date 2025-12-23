@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         const leads = await odoo.searchRead(
             'crm.lead',
             domain,
-            ['id', 'name', 'phone', 'email', 'type', 'stage_id', 'user_id', 'description', 'create_date'],
+            ['id', 'name', 'phone', 'email_from', 'type', 'stage_id', 'user_id', 'description', 'create_date'],
             50
         );
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
             description: notes || '',
         };
 
-        if (email) leadData.email = email;
+        if (email) leadData.email_from = email;
         // Note: 'source' would need to be mapped to source_id in real implementation
 
         const leadId = await odoo.create('crm.lead', leadData);
