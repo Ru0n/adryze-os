@@ -40,7 +40,7 @@ Interaction (Sending):
 User types message -> Clicks Send.
 Action: Call n8n Webhook (Payload: { channel, phone, message }). n8n handles the delivery via WAHA.
 Optimistic UI: Show the message instantly in the chat window before confirmation.
-FEATURE 3: Inventory "Google Lens" (Visual Search & CRUD)
+FEATURE 3: chat "Google Lens" (Visual Search & CRUD)
 Requirement: Manage products textually AND visually.
 Visual Search:
 Upload Image Button -> Sends to n8n Webhook.
@@ -94,7 +94,7 @@ B. /dashboard/chat
 Layout: Sidebar (Conversation List) + Main (Chat Window).
 Data Fetch: Fetch mail.channel where channel_type is 'chat'.
 Polling: Refresh list every 3s using SWR.
-C. /dashboard/inventory
+C. /dashboard/chat
 Layout: Data Table (use TanStack Table for sorting/filtering).
 Visual Search Component: Drag-and-drop zone for images.
 On drop -> POST to n8n -> setFilter(response.keyword).
@@ -109,4 +109,4 @@ User can log in using Odoo credentials.
 User can upload a photo of a bike part and see the correct stock count within 5 seconds.
 User can send a WhatsApp message from the Dashboard, and it appears on the customer's phone.
 User can change the price of a product, and it reflects in Odoo immediately.
-Developer Note: Focus on the Inventory Visual Search first. That is the "Wow" factor for the demo. Chat is secondary priority for the V1 Demo.
+Developer Note: Focus on the chat Visual Search first. That is the "Wow" factor for the demo. Chat is secondary priority for the V1 Demo.

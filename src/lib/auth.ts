@@ -2,9 +2,19 @@ import { getIronSession, IronSession, SessionOptions } from 'iron-session';
 import { cookies } from 'next/headers';
 import { SessionData } from '@/types';
 
+const secretPassword = process.env.SECRET_COOKIE_PASSWORD;
+
+if (!secretPassword || secretPassword.length < 32) {
+    console.warn(
+        'Warning: SECRET_COOKIE_PASSWORD is not set or too short. Using a fallback for development.'
+    );
+}
+
 // Session configuration
 export const sessionOptions: SessionOptions = {
-    password: process.env.SECRET_COOKIE_PASSWORD as string,
+    password: secretPassword && secretPassword.length >= 32
+        ? secretPassword
+        : 'complex_password_at_least_32_characters_long_1234567890',
     cookieName: 'adryze_os_session',
     cookieOptions: {
         secure: process.env.NODE_ENV === 'production',

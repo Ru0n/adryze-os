@@ -2,7 +2,7 @@ import xmlrpc from 'xmlrpc';
 
 // Odoo connection configuration
 const ODOO_URL = process.env.NEXT_PUBLIC_ODOO_URL || 'https://erp.adryze.com';
-const ODOO_DB = process.env.ODOO_DB || 'Panc_demo';
+const ODOO_DB = process.env.ODOO_DB || 'Panc_live';
 
 interface OdooClientConfig {
     uid: number;

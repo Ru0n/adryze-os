@@ -18,6 +18,9 @@ import {
     ChevronLeft
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import Instagram from '@/components/apps/Instagram';
+import WhatsApp from '@/components/apps/WhatsApp';
+import Messenger from '@/components/apps/Messenger';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -161,6 +164,192 @@ export default function ChatPage() {
         mutateConversations();
     };
 
+    // WhatsApp Integration
+    if (selectedPlatform === 'whatsapp') {
+        return (
+            <div className="h-full flex bg-[#0c1317]">
+                {/* 1. Platform Bar (Maintained for navigation) */}
+                <div className="w-16 border-r border-[#202c33] bg-[#111b21] flex flex-col items-center py-6 gap-6 z-20">
+                    {platforms.map((p) => (
+                        <button
+                            key={p.id}
+                            onClick={() => setSelectedPlatform(p.id)}
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedPlatform === p.id ? 'bg-[#2a3942] text-[#00a884]' : 'text-[#aebac1] hover:bg-[#202c33]'
+                                }`}
+                            title={p.name}
+                        >
+                            {p.logo ? (
+                                <img src={p.logo} alt={p.name} className="w-6 h-6 object-contain" />
+                            ) : (
+                                p.icon && <p.icon className="w-6 h-6" />
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* WhatsApp Full UI */}
+                <div className="flex-1 overflow-hidden">
+                    <WhatsApp
+                        conversations={conversations}
+                        selectedConversation={selectedConversation}
+                        onSelectConversation={setSelectedConversation}
+                        messages={messages}
+                        onToggleAI={toggleAI}
+                        onSendMessage={(text: string) => {
+                            // Re-use logic for sending
+                            const e = { preventDefault: () => { } } as React.FormEvent;
+                            // We need to set state first because handleSendMessage reads from state
+                            // But handleSendMessage is designed for form submit.
+                            // Let's refactor or just direct call fetch logic here for cleaner code.
+                            // Actually, let's just use the existing logic by creating a wrapper
+
+                            // Direct send logic for WhatsApp component
+                            const send = async () => {
+                                if (!selectedConversation) return;
+                                setSending(true);
+                                try {
+                                    await fetch('/api/chat/send', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            conversationId: selectedConversation.id,
+                                            message: text,
+                                            author_role: 'agent'
+                                        }),
+                                    });
+                                } catch (error) {
+                                    console.error(error);
+                                } finally {
+                                    setSending(false);
+                                }
+                            };
+                            send();
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    // Instagram Integration
+    if (selectedPlatform === 'instagram') {
+        return (
+            <div className="h-full flex bg-black">
+                {/* 1. Platform Bar (Maintained for navigation) */}
+                <div className="w-16 border-r border-zinc-800 bg-black flex flex-col items-center py-6 gap-6 z-20">
+                    {platforms.map((p) => (
+                        <button
+                            key={p.id}
+                            onClick={() => setSelectedPlatform(p.id)}
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedPlatform === p.id ? 'bg-zinc-800 text-[#E4405F]' : 'text-zinc-500 hover:bg-zinc-900'
+                                }`}
+                            title={p.name}
+                        >
+                            {p.logo ? (
+                                <img src={p.logo} alt={p.name} className="w-6 h-6 object-contain" />
+                            ) : (
+                                p.icon && <p.icon className="w-6 h-6" />
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Instagram Full UI */}
+                <div className="flex-1 overflow-hidden">
+                    <Instagram
+                        conversations={conversations}
+                        selectedConversation={selectedConversation}
+                        onSelectConversation={setSelectedConversation}
+                        messages={messages}
+                        onToggleAI={toggleAI}
+                        onSendMessage={(text: string) => {
+                            const send = async () => {
+                                if (!selectedConversation) return;
+                                setSending(true);
+                                try {
+                                    await fetch('/api/chat/send', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            conversationId: selectedConversation.id,
+                                            message: text,
+                                            author_role: 'agent'
+                                        }),
+                                    });
+                                } catch (error) {
+                                    console.error(error);
+                                } finally {
+                                    setSending(false);
+                                }
+                            };
+                            send();
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    // Facebook Messenger Integration
+    if (selectedPlatform === 'facebook') {
+        return (
+            <div className="h-full flex bg-black">
+                {/* 1. Platform Bar (Maintained for navigation) */}
+                <div className="w-16 border-r border-zinc-800 bg-black flex flex-col items-center py-6 gap-6 z-20">
+                    {platforms.map((p) => (
+                        <button
+                            key={p.id}
+                            onClick={() => setSelectedPlatform(p.id)}
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedPlatform === p.id ? 'bg-zinc-800 text-[#1877F2]' : 'text-zinc-500 hover:bg-zinc-900'
+                                }`}
+                            title={p.name}
+                        >
+                            {p.logo ? (
+                                <img src={p.logo} alt={p.name} className="w-6 h-6 object-contain" />
+                            ) : (
+                                p.icon && <p.icon className="w-6 h-6" />
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Messenger Full UI */}
+                <div className="flex-1 overflow-hidden">
+                    <Messenger
+                        conversations={conversations}
+                        selectedConversation={selectedConversation}
+                        onSelectConversation={setSelectedConversation}
+                        messages={messages}
+                        onToggleAI={toggleAI}
+
+                        onSendMessage={(text: string) => {
+                            const send = async () => {
+                                if (!selectedConversation) return;
+                                setSending(true);
+                                try {
+                                    await fetch('/api/chat/send', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            conversationId: selectedConversation.id,
+                                            message: text,
+                                            author_role: 'agent'
+                                        }),
+                                    });
+                                } catch (error) {
+                                    console.error(error);
+                                } finally {
+                                    setSending(false);
+                                }
+                            };
+                            send();
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="h-full flex bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 font-sans">
             {/* 1. Platform Bar (Thin & Clean) */}
@@ -176,7 +365,7 @@ export default function ChatPage() {
                         {p.logo ? (
                             <img src={p.logo} alt={p.name} className="w-6 h-6 object-contain" />
                         ) : (
-                            <p.icon className="w-6 h-6" />
+                            p.icon && <p.icon className="w-6 h-6" />
                         )}
                     </button>
                 ))}
@@ -249,8 +438,8 @@ export default function ChatPage() {
                             <button
                                 onClick={toggleAI}
                                 className={`text-[10px] font-bold px-3 py-1.5 rounded-full border transition-all ${selectedConversation.status === 'automated'
-                                        ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
+                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
                                     }`}
                             >
                                 {selectedConversation.status === 'automated' ? 'AI ACTIVE' : 'MANUAL MODE'}
@@ -265,8 +454,8 @@ export default function ChatPage() {
                                     <div key={msg.id || i} className={`flex ${isAgent ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[75%] ${isAgent ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                                             <div className={`px-4 py-2 rounded-2xl text-sm ${isAgent
-                                                    ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-tr-sm'
-                                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-tl-sm'
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-tr-sm'
+                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-tl-sm'
                                                 }`}>
                                                 {msg.body}
                                             </div>

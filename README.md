@@ -2,7 +2,7 @@
 
 Adryze OS is a modern, high-speed "Headless" Frontend for Odoo ERP, built with Next.js 14+ (App Router). It abstracts the complexity of Odoo's backend, providing a premium, Apple-style dashboard for:
 - 💬 **Unified Omnichannel Chat** (WhatsApp, Instagram, Messenger)
-- 📸 **Visual Inventory Management** (AI-powered "Google Lens" for products)
+- 📸 **Visual chat Management** (AI-powered "Google Lens" for products)
 - 🚀 **CRM & Lead Management**
 
 ## 🛠 Tech Stack
@@ -93,7 +93,7 @@ python test.py
 
 ## 📂 Project Structure
 - **/app**: Next.js App Router pages & API routes.
-- **/src/components**: React components (UI, Dashboard, Inventory).
+- **/src/components**: React components (UI, Dashboard, Chat).
 - **/src/lib**: Utility libraries (Odoo XML-RPC client, Supabase client).
 - **/public**: Static assets.
 

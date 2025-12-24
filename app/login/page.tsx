@@ -29,8 +29,8 @@ export default function LoginPage() {
                 return;
             }
 
-            // Redirect to inventory (priority feature per PRD)
-            router.push('/dashboard/inventory');
+            // Redirect to chat (priority feature per PRD)
+            router.push('/dashboard/chat');
         } catch (err: any) {
             setError('Network error. Please try again.');
         } finally {

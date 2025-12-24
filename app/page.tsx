@@ -5,7 +5,7 @@ export default async function Home() {
   const authenticated = await isAuthenticated();
 
   if (authenticated) {
-    redirect('/dashboard/inventory');
+    redirect('/dashboard/chat');
   } else {
     redirect('/login');
   }
