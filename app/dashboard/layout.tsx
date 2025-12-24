@@ -1,13 +1,14 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageCircle, Package, Users, LogOut } from 'lucide-react';
+import { MessageCircle, Package, Users, LogOut, Phone } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navigation = [
     { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
     { name: 'Chat', href: '/dashboard/chat', icon: MessageCircle },
     { name: 'CRM', href: '/dashboard/crm', icon: Users },
+    { name: 'Voice Intelligence', href: '/dashboard/voice', icon: Phone },
 ];
 
 export default function DashboardLayout({
