@@ -46,15 +46,13 @@ export default function DashboardLayout({
                                 Adryze OS
                             </h2>
                         )}
-                        {/* Collapse Toggle Button (Expanded State: Outside/Right Edge) */}
-                        {!isCollapsed && (
-                            <button
-                                onClick={() => setIsCollapsed(true)}
-                                className="absolute -right-3 top-7 w-6 h-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full flex items-center justify-center text-zinc-500 hover:text-[#5c1c8a] shadow-sm z-50 hover:scale-110 transition-all"
-                            >
-                                <ChevronLeft className="w-3 h-3" />
-                            </button>
-                        )}
+                        {/* Collapse/Expand Toggle Button (Inline style) */}
+                        <button
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            className="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-400 hover:text-white"
+                        >
+                            <ChevronLeft className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
+                        </button>
                     </div>
 
                     {/* Navigation */}
@@ -92,15 +90,7 @@ export default function DashboardLayout({
 
                     {/* Footer Actions */}
                     <div className="p-4 border-t border-zinc-800 flex flex-col gap-4">
-                        {/* Expand Button (Collapsed State: Inside/Centered) */}
-                        {isCollapsed && (
-                            <button
-                                onClick={() => setIsCollapsed(false)}
-                                className="w-10 h-10 mx-auto bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl flex items-center justify-center text-zinc-400 hover:text-white transition-all"
-                            >
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        )}
+
 
                         <button
                             onClick={handleLogout}

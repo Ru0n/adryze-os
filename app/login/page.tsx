@@ -39,26 +39,26 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-950 dark:to-black px-4">
-            <div className="w-full max-w-md">
-                {/* Logo/Brand */}
-                <div className="mb-8 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                        Adryze OS
-                    </h1>
-                    <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                        Panc Bike ERP Dashboard
-                    </p>
-                </div>
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#000000] to-[#5c1c8a] text-zinc-100 relative overflow-hidden px-4">
 
+            <div className="w-full max-w-md relative z-10">
                 {/* Login Card */}
-                <div className="rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-2xl border border-zinc-200/50 dark:border-zinc-800/50 p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="rounded-2xl bg-zinc-900/90 backdrop-blur-xl shadow-2xl border border-zinc-800 p-8">
+                    <div className="mb-8 text-center">
+                        <h1 className="text-2xl font-bold tracking-tight text-white">
+                            Sign In
+                        </h1>
+                        <p className="mt-2 text-xs text-zinc-400">
+                            Use your Odoo credentials to access the dashboard
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Email Field */}
                         <div>
                             <label
                                 htmlFor="username"
-                                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                                className="block text-xs font-medium text-zinc-400 mb-1.5"
                             >
                                 Email
                             </label>
@@ -68,7 +68,7 @@ export default function LoginPage() {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                className="w-full px-4 py-2.5 rounded-lg border border-zinc-800 bg-black/50 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-700 focus:border-zinc-700 transition-all text-sm"
                                 placeholder="api_integration@adryze.com"
                                 disabled={loading}
                             />
@@ -78,7 +78,7 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                                className="block text-xs font-medium text-zinc-400 mb-1.5"
                             >
                                 API Key
                             </label>
@@ -88,7 +88,7 @@ export default function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                className="w-full px-4 py-2.5 rounded-lg border border-zinc-800 bg-black/50 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-700 focus:border-zinc-700 transition-all text-sm"
                                 placeholder="Enter your Odoo API key"
                                 disabled={loading}
                             />
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
                         {/* Error Message */}
                         {error && (
-                            <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+                            <div className="rounded-lg bg-red-900/20 border border-red-900/50 px-4 py-2 text-xs text-red-400">
                                 {error}
                             </div>
                         )}
@@ -105,11 +105,11 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-zinc-200 text-black font-bold text-sm shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
@@ -121,10 +121,12 @@ export default function LoginPage() {
                         </button>
                     </form>
 
+
+
                     {/* Helper Text */}
-                    <p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
+                    {/* <p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-600">
                         Use your Odoo credentials to access the dashboard
-                    </p>
+                    </p> */}
                 </div>
             </div>
         </div>
