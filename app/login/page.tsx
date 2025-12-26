@@ -43,7 +43,7 @@ export default function LoginPage() {
 
             <div className="w-full max-w-md relative z-10">
                 {/* Login Card */}
-                <div className="rounded-2xl bg-zinc-900/90 backdrop-blur-xl shadow-2xl border border-zinc-800 p-8">
+                <div className="rounded-2xl bg-black shadow-2xl border border-zinc-800 p-8">
                     <div className="mb-8 text-center">
                         <h1 className="text-2xl font-bold tracking-tight text-white">
                             Sign In
